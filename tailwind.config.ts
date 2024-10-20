@@ -8,9 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        inter: "var(--font-inter)",
+
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        'background' : "#f8f9fc",
         'my-primary': {
         '50': '#f5f7fa',
         '100': '#e9ecf5',
@@ -24,6 +27,20 @@ const config: Config = {
         '900': '#2a3750',
         '950': '#192030',
     },
+    'primary-comp': {
+        '50': '#f2f6fc',
+        '100': '#e2ebf7',
+        '200': '#ccdcf1',
+        '300': '#a8c6e8',
+        '400': '#7fa8db',
+        '500': '#608bd1',
+        '600': '#4c72c4',
+        '700': '#4260b3',
+        '800': '#40569f',
+        '900': '#334475',
+        '950': '#232c48',
+    },
+    
     'my-accent': {
         '50': '#f0f7ff',
         '100': '#e0effe',
@@ -63,7 +80,7 @@ const config: Config = {
         '900': '#303978',
         '950': '#21254a',
     },
-    'my-black': {
+    'my-dark': {
         '50': '#f6f7f9',
         '100': '#ededf1',
         '200': '#d6d9e1',
@@ -76,6 +93,20 @@ const config: Config = {
         '900': '#353945',
         '950': '#23262e',
     },
+    'my-black': {
+        '50': '#f5f7f8',
+        '100': '#eeeff1',
+        '200': '#dfe3e6',
+        '300': '#cbd1d6',
+        '400': '#b5bcc4',
+        '500': '#a1a8b3',
+        '600': '#8e95a2',
+        '700': '#787e8a',
+        '800': '#626771',
+        '900': '#52555d',
+        '950': '#303236',
+    },
+    
     
     
     
