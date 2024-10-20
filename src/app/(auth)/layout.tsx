@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Inter} from "next/font/google";
 import "../globals.css";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased`}
+        className={`${inter.variable} antialiased`}
       >
-        {children}
+        <Header />
+        <div className="h-[calc(100vh-3.5rem)] grid grid-cols-[17rem_auto]">
+            <Sidebar />
+            {children}
+        </div>
       </body>
     </html>
   );
