@@ -25,7 +25,7 @@ const Dashboard = () => {
       <h1 className="text-my-black-950 font-semibold text-[1.5rem] tracking-wide">
         Dashboard
       </h1>
-      <div className="mt-4 w-full grid grid-cols-[50%_auto_auto] border border-[#CCCCCC] border-opacity-50 bg-white px-4 py-4 rounded-md">
+      <div className="mt-4 w-full grid grid-cols-[50%_auto_auto] border border-[#CCCCCC] border-opacity-50 bg-white px-4 py-5 rounded-md">
         <div className="text-my-primary-900 flex flex-col justify-between">
           <div>
             <h2 className="text-[1.1rem] text-my-primary-900 font-medium tracking-wide">
