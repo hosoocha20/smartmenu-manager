@@ -1,7 +1,12 @@
 "use client";
 import React, { ReactNode } from "react";
 import { FiPlusSquare } from "react-icons/fi";
-import { MdOutlineTableBar, MdOutlineQrCode } from "react-icons/md";
+import {
+  MdOutlineTableBar,
+  MdOutlineQrCode,
+  MdQrCode2,
+  MdOutlineCategory,
+} from "react-icons/md";
 import { PiEye } from "react-icons/pi";
 import { IoEarth } from "react-icons/io5";
 import { TbBulb } from "react-icons/tb";
@@ -11,12 +16,21 @@ interface GetStartedLinksI {
   icon: ReactNode;
   link: string;
 }
+interface OverviewI {
+  name: string;
+  icon: ReactNode;
+}
 const getStartedArr: GetStartedLinksI[] = [
   { name: "Add your menu categories", icon: <FiPlusSquare />, link: "" },
   { name: "Add your tables", icon: <MdOutlineTableBar />, link: "" },
   { name: "Set up your QR links", icon: <MdOutlineQrCode />, link: "" },
   { name: "Preview your menu", icon: <PiEye />, link: "" },
   { name: "Publish your digital menu", icon: <IoEarth />, link: "" },
+];
+const overviewArr: OverviewI[] = [
+  { name: "Menu categories", icon: <MdOutlineCategory /> },
+  { name: "Tables", icon: <MdOutlineTableBar /> },
+  { name: "Hosting QR links", icon: <MdQrCode2 /> },
 ];
 
 const Dashboard = () => {
@@ -25,9 +39,9 @@ const Dashboard = () => {
       <h1 className="text-my-black-950 font-semibold text-[1.5rem] tracking-wide">
         Dashboard
       </h1>
-      <div className="dashboard-grid gap-4 h-full w-full">
+      <div className="dashboard-grid gap-4 w-full">
         {/*Smartmenu Get Started */}
-        <div className="dashboard-start mt-4 w-full grid grid-cols-[50%_auto_auto] border border-[#CCCCCC] border-opacity-50 bg-white px-4 py-4 rounded-md">
+        <div className="dashboard-start mt-4 w-full grid grid-cols-[50%_auto_auto] border border-[#CCCCCC] border-opacity-50 bg-white px-5 py-4 rounded-md">
           <div className="text-my-primary-900 flex flex-col justify-between">
             <div>
               <h2 className="text-[1.1rem] text-my-primary-900 font-medium tracking-wide">
@@ -42,7 +56,9 @@ const Dashboard = () => {
             </button>
           </div>
           <div className="text-my-primary-800 py-3">
-            <h4 className="font-semibold text-[0.95rem]">Lets Get You Started</h4>
+            <h4 className="font-semibold text-[0.95rem]">
+              Lets Get You Started
+            </h4>
             <div className="mt-2 grid grid-cols-[min-content_auto] gap-y-2 gap-x-3 text-my-primary-900 items-center">
               {getStartedArr.map((el: GetStartedLinksI, i: number) => (
                 <>
@@ -64,19 +80,32 @@ const Dashboard = () => {
           </div>
         </div>
         {/*Overview */}
-        <div className="dashboard-overview  w-full  border border-[#CCCCCC] border-opacity-50 bg-white px-4 py-3 rounded-md">
+        <div className="dashboard-overview  w-full  border border-[#CCCCCC] border-opacity-50 bg-white px-5 py-3 rounded-md">
           <h2 className="text-[1.1rem] text-my-primary-900 font-medium tracking-wide">
             Overview
           </h2>
+          <div className="py-4  flex  w-[90%] mx-auto my-0 ">
+            {overviewArr.map((el: OverviewI, i: number) => (
+              <div key={i} className="text-my-primary-900 flex gap-2 flex-1">
+                <div className={`text-white ${i === 0 ? "bg-my-secondary-300" : i === 1 ? "bg-royal-blue-500" : "bg-my-dark-700"}  text-[1.7rem] flex items-center justify-center  w-[3.2rem] h-[3.2rem] rounded-full`}>
+                  {el.icon}
+                </div>
+                <div className="mt-[-0.5rem]">
+                  <p className="text-sm">{el.name}</p>
+                  <p className="text-[1.9rem]  leading-none font-bold">7</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         {/*Profile */}
-        <div className="dashboard-profile w-full border border-[#CCCCCC] border-opacity-50 bg-white px-4 py-3 rounded-md">
+        <div className="dashboard-profile w-full border border-[#CCCCCC] border-opacity-50 bg-white px-5 py-3 rounded-md">
           <h2 className="text-[1.1rem] text-my-primary-900 font-medium tracking-wide">
             Overview
           </h2>
         </div>
         {/*Activity */}
-        <div className="dashboard-activity  w-full  border border-[#CCCCCC] border-opacity-50 bg-white px-4 py-3 rounded-md">
+        <div className="dashboard-activity  w-full  border border-[#CCCCCC] border-opacity-50 bg-white px-5 py-3 rounded-md">
           <h2 className="text-[1.1rem] text-my-primary-900 font-medium tracking-wide">
             Overview
           </h2>
