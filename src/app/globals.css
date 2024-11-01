@@ -25,3 +25,25 @@ body {
     text-wrap: balance;
   }
 }
+
+.dashboard-start{
+  grid-area: start;
+}
+.dashboard-overview{
+  grid-area: overview;
+}
+.dashboard-profile{
+  grid-area: profile;
+}
+.dashboard-activity{
+  grid-area: activity;
+}
+
+.dashboard-grid{
+  display: grid;
+  grid-template-areas: 'start start start start start'
+                        'overview overview overview profile profile'
+                        'activity activity activity activity activity';
+  grid-template-rows: min-content auto auto;
+
+}
