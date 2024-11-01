@@ -35,15 +35,15 @@ body {
 .dashboard-profile{
   grid-area: profile;
 }
-.dashboard-activity{
-  grid-area: activity;
+.dashboard-onlineMenu{
+  grid-area: menu;
 }
 
 .dashboard-grid{
   display: grid;
   grid-template-areas: 'start start start start start'
                         'overview overview overview profile profile'
-                        'activity activity activity activity activity';
+                        'menu menu menu menu menu';
   grid-template-rows: min-content auto auto;
 
 }

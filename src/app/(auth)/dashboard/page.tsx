@@ -6,12 +6,14 @@ import {
   MdOutlineQrCode,
   MdQrCode2,
   MdOutlineCategory,
+  MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import { PiEye } from "react-icons/pi";
-import { IoEarth,  } from "react-icons/io5";
+import { IoEarth } from "react-icons/io5";
 
 import { TbBulb } from "react-icons/tb";
 import { LuSettings } from "react-icons/lu";
+import { GoDotFill } from "react-icons/go";
 
 interface GetStartedLinksI {
   name: string;
@@ -89,7 +91,15 @@ const Dashboard = () => {
           <div className=" py-8  flex  w-[90%] mx-auto my-0 ">
             {overviewArr.map((el: OverviewI, i: number) => (
               <div key={i} className="text-my-primary-900 flex gap-2 flex-1">
-                <div className={`text-white ${i === 0 ? "bg-my-secondary-300" : i === 1 ? "bg-royal-blue-500" : "bg-my-dark-700"}  text-[1.7rem] flex items-center justify-center  w-[3.2rem] h-[3.2rem] rounded-full`}>
+                <div
+                  className={`text-white ${
+                    i === 0
+                      ? "bg-my-secondary-300"
+                      : i === 1
+                      ? "bg-royal-blue-500"
+                      : "bg-my-dark-700"
+                  }  text-[1.7rem] flex items-center justify-center  w-[3.2rem] h-[3.2rem] rounded-full`}
+                >
                   {el.icon}
                 </div>
                 <div className="mt-[-0.5rem]">
@@ -106,19 +116,56 @@ const Dashboard = () => {
             <h2 className="text-[1.1rem] text-my-primary-900 font-medium tracking-wide">
               Your Profile
             </h2>
-            <LuSettings className="flex text-[#808080] text-[1.2rem]"/>
+            <LuSettings className="flex text-[#808080] text-[1.2rem]" />
           </div>
           <div className="mt-4 flex flex-col gap-1 text-[0.9rem] text-my-primary-900">
-            <p ><span className="font-medium">Restaurant Name:</span> SmartMenu</p>
-            <p ><span className="font-medium">Admin Name:</span> John Doe</p>
-            <p ><span className="font-medium">Last Login:</span> 8:26pm 1/11/2024</p>
+            <p>
+              <span className="font-medium">Restaurant Name:</span> SmartMenu
+            </p>
+            <p>
+              <span className="font-medium">Admin Name:</span> John Doe
+            </p>
+            <p>
+              <span className="font-medium">Last Login:</span> 8:26pm 1/11/2024
+            </p>
           </div>
         </div>
         {/*Activity */}
-        <div className="dashboard-activity  w-full  border border-[#CCCCCC] border-opacity-50 bg-white px-5 py-3 rounded-md">
+        <div className="dashboard-onlineMenu  w-full  border border-[#CCCCCC] border-opacity-50 bg-white px-5 py-3 rounded-md">
           <h2 className="text-[1.1rem] text-my-primary-900 font-medium tracking-wide">
-            Overview
+            Your Online Menus
           </h2>
+          <table className="mt-4 border w-full rounded-md">
+            <thead>
+              <tr className="bg-royal-blue-200 text-my-primary-900 *:py-2 *:px-5 text-left *:text-[0.92rem] *:font-medium">
+                <th scope="col">Qr Link</th>
+                <th scope="col">Table</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody className="*:border">
+              <tr className=" text-my-primary-900 *:py-2 *:px-5 text-left *:text-[0.9rem] *:font-normal">
+                <td>https://examplemenu.com/t=qaxhdkifoe</td>
+                <td>1</td>
+                <td className="flex items-center gap-1">
+                  <GoDotFill className="text-[#00a86b]" />
+                  Online
+                </td>
+              </tr>
+              <tr className="bg-my-primary-50 text-my-primary-900 *:py-2 *:px-5 text-left *:text-[0.9rem] *:font-normal">
+                <td>https://examplemenu.com/t=qaxhdkifoe</td>
+                <td>1</td>
+                <td className="flex items-center gap-1">
+                  <GoDotFill className="text-[#00a86b]" />
+                  Online
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button className="my-0 mx-auto mt-3 bg-royal-blue-400 rounded-sm px-6 py-1 text-white text-[0.9rem] flex items-center">
+            View More
+            <MdOutlineKeyboardArrowRight className="flex text-[1.4rem]"/>
+          </button>
         </div>
       </div>
     </div>
