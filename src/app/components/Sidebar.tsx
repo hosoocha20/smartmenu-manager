@@ -24,7 +24,7 @@ const Sidebar = () => {
     <div className='font-inter -full bg-my-primary-950 px-4 py-3'>
         <div className='flex flex-col gap-1'>
             {sidebararr.map((item: SidebarLink, i:number) => (
-                <Link href={`${item.link}`} key={i} className={`${currentPath === item.link ? "bg-primary-comp-800 text-white" : "text-my-black-600"}  flex gap-3 items-center w-full py-3 px-3 rounded-md `}>
+                <Link href={`${item.link}`} key={i} className={ `${currentPath === item.link || currentPath.startsWith(item.link) ? "bg-primary-comp-800 text-white" : "text-my-black-600"}  flex gap-3 items-center w-full py-3 px-3 rounded-md `}>
                     <div className='flex text-[1.3rem]'>{item.icon}</div>
                     <p className='text-[0.9rem]  tracking-wide'>{item.name}</p>
                 </Link>
