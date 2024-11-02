@@ -7,7 +7,7 @@ const MenuLayout = ({
     children: React.ReactNode;
   }>) => {
   return (
-    <div className=" grid grid-cols-[17rem_auto]">
+    <div className=" grid grid-cols-[14rem_auto]">
     <MenuSidebar />
     {children}
 </div>

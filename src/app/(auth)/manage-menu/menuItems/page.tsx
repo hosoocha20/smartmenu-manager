@@ -2,7 +2,7 @@ import React from 'react'
 
 const MenuItems = () => {
   return (
-    <div>page</div>
+    <div className='bg-background'>page</div>
   )
 }
 

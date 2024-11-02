@@ -3,7 +3,7 @@ import React from 'react'
 
 const MenuCategory = () => {
   return (
-    <div>pages</div>
+    <div className='bg-background'>pages</div>
   )
 }
 
