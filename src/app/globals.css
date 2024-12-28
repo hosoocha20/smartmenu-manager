@@ -47,3 +47,33 @@ body {
   grid-template-rows: min-content auto auto;
 
 }
+
+
+
+/* Login Page */
+.login-bg-shadow{
+  -webkit-box-shadow: 0px 0px 15px -7px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 0px 15px -7px rgba(0,0,0,0.25);
+  box-shadow: 0px 0px 15px -7px rgba(0,0,0,0.15),
+              0px 0px 5px 0px rgba(0,0,0,0.1);
+  
+}
+.rememberMeCheckbox[type=checkbox] {
+  accent-color: #4a65f0;
+}
+
+.login-form-loading-ani{
+  animation: moving 1.2s ease-in-out infinite;
+}
+
+@keyframes moving {
+  50% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0;
+    right: 0;
+    left: unset;
+  }
+}

@@ -18,7 +18,7 @@ interface SidebarLink{
 
 const Sidebar = () => {
     const currentPath = usePathname();
-    const sidebararr : SidebarLink[] = [{name: "Dashboard", icon: <RxDashboard />, link: "/dashboard"}, {name: "Menu", icon: <BiFoodMenu />, link: "/manage-menu"}, {name: "Appearance", icon: <MdOutlinePalette />, link: "/manage-appearance"}, {name: "Media", icon: <MdOutlinePermMedia />, link: "/manage-media"}, {name: "Activity Log", icon: <GoHistory />, link: "/activity-log"}, {name: "QR Links", icon: <MdQrCode />, link: "/manage-qr-links"}]
+    const sidebararr : SidebarLink[] = [{name: "Dashboard", icon: <RxDashboard />, link: "/user/dashboard"}, {name: "Menu", icon: <BiFoodMenu />, link: "/user/manage-menu"}, {name: "Appearance", icon: <MdOutlinePalette />, link: "user/manage-appearance"}, {name: "Media", icon: <MdOutlinePermMedia />, link: "user/manage-media"}, {name: "Activity Log", icon: <GoHistory />, link: "user/activity-log"}, {name: "QR Links", icon: <MdQrCode />, link: "user/manage-qr-links"}]
     
   return (
     <div className='font-inter w-full bg-my-primary-950 px-4 py-3'>

@@ -15,6 +15,7 @@ import { TbBulb } from "react-icons/tb";
 import { LuSettings } from "react-icons/lu";
 import { GoDotFill } from "react-icons/go";
 
+
 interface GetStartedLinksI {
   name: string;
   icon: ReactNode;
@@ -38,6 +39,7 @@ const overviewArr: OverviewI[] = [
 ];
 
 const Dashboard = () => {
+
   return (
     <div className="font-inter bg-background px-6 py-4 overflow-y-auto">
       <h1 className="text-my-black-950 font-semibold text-[1.5rem] tracking-wide">
@@ -63,7 +65,7 @@ const Dashboard = () => {
             <h4 className="font-semibold text-[0.95rem]">
               Lets Get You Started
             </h4>
-            <div className="mt-2 grid grid-cols-[min-content_auto] gap-y-2 gap-x-3 text-my-primary-900 items-center">
+            <div className="mt-2 grid grid-cols-[min-content_auto] gap-y-2 gap-x-3 text-my-primary-900 items-center" >
               {getStartedArr.map((el: GetStartedLinksI, i: number) => (
                 <Fragment key={i}>
                   <div className="flex text-[1.1rem]">{el.icon}</div>
