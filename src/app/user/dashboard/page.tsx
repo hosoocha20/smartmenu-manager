@@ -41,11 +41,11 @@ const overviewArr: OverviewI[] = [
 ];
 
 const Dashboard = () => {
-  const authDetails = useSelector(
+  const userDetails = useSelector(
     (state: RootState) => state.auth.restaurant.user
   );
 
-  console.log(authDetails)
+  console.log(userDetails)
   const handleGet = async () => {
 
     try {
@@ -207,13 +207,25 @@ const Dashboard = () => {
           </div>
           <div className="mt-4 flex flex-col gap-1 text-[0.9rem] text-my-primary-900">
             <p>
-              <span className="font-medium">Restaurant Name:</span> SmartMenu
+              <span className="font-medium">Restaurant Name:</span> {userDetails.name}
             </p>
             <p>
-              <span className="font-medium">Admin Name:</span> John Doe
+              <span className="font-medium">Admin Name:</span> {userDetails.fullname}
             </p>
             <p>
-              <span className="font-medium">Last Login:</span> 8:26pm 1/11/2024
+              <span className="font-medium">Email:</span> {userDetails.email}
+            </p>
+            <p>
+              <span className="font-medium">Address:</span> {userDetails.address}
+            </p>
+            <p>
+              <span className="font-medium">Opening Time:</span> {userDetails.openingTime}
+            </p>
+            <p>
+              <span className="font-medium">Closing Time:</span> {userDetails.closingTime}
+            </p>
+            <p>
+              <span className="font-medium">Pos Provider:</span> {userDetails.posProvider}
             </p>
           </div>
         </div>
