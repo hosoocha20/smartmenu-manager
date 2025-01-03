@@ -7,10 +7,18 @@ import { HiOutlinePlus } from "react-icons/hi";
 import { IoIosSearch } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { BiCategory } from "react-icons/bi";
+import { useSelector } from "react-redux";
+import { AppState } from "@/app/lib/types/selectorTypes";
+import { selectCategoryTableData } from "@/app/lib/selectors/categorySelectors";
+import { NormalizedState } from "@/app/lib/normalizedUserData";
 
 const MenuCategory = () => {
     const cols = [{key: "categoryName", name: "Category"}, {key: "subCategories", name: "Sub Category"}, {key: "items", name: "Items"}, {key: "details", name: "Details"},{key: "delete", name: "Delete"} ]
-  const dummyarr: MenuCategoryI[] = [
+    const categoryTableData = useSelector(
+      selectCategoryTableData
+    );
+    console.log(categoryTableData)
+    const dummyarr: MenuCategoryI[] = [
     {
     key: 1,
       categoryName: "Appetizers",
@@ -60,11 +68,11 @@ const MenuCategory = () => {
     switch (columnKey) {
       case "subCategories":
         return(
-            <p>{row.subCategories.length}</p>
+            <p>{row.subcategoryCount}</p>
         );
       case "items":
         return(
-            <p>{row.items.length}</p>
+            <p>{row.itemCount}</p>
         )
       case "details":
         return (
@@ -101,9 +109,9 @@ const MenuCategory = () => {
         <TableHeader className="" columns={cols}>
             {(column) => <TableColumn key={column.key}  className={`text-[0.93rem] font-medium text-[#808080] ${column.key === "categoryName" ? "text-left" : "text-center"}`}>{column.name}</TableColumn>}
         </TableHeader>
-        <TableBody items={dummyarr}>
+        <TableBody items={categoryTableData}>
             {(item) => (
-                <TableRow key={item.key}>
+                <TableRow key={item.id}>
                     {(columnKey) => <TableCell className={`text-[0.9rem] text-my-black-950 ${columnKey === "categoryName" ? "text-left" : "text-center"}`}>{renderCell(item, columnKey)}</TableCell>}
                     
                 </TableRow>

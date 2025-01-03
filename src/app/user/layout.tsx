@@ -22,7 +22,7 @@ export default function AuthLayout({
 }>) {
 
   return (
-    <html lang="en">
+
       <body className={`${inter.variable} antialiased`}>
 
           <Header />
@@ -32,6 +32,6 @@ export default function AuthLayout({
           </div>
 
       </body>
-    </html>
+
   );
 }
