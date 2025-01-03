@@ -5,6 +5,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { TbLogout, TbLogout2 } from "react-icons/tb";
 import { BiUser } from "react-icons/bi";
 import { useRouter } from "next/navigation";
+
 import { persistor } from "../store/store";
 
 const Header = () => {
@@ -38,7 +39,9 @@ const Header = () => {
       console.log(data);
       persistor.purge();
       //redirect to login
-      router.push('/login');
+      router.replace('/login');
+      //window.location.reload();
+      
       
  
     } catch (err) {

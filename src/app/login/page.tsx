@@ -1,7 +1,7 @@
 "use client";
-import { useDispatch } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { loginSuccess } from '../store/slices/authSlice';
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { loginSuccess } from "../store/slices/authSlice";
 import { useState } from "react";
 import { HiOutlineMail } from "react-icons/hi";
 import { LuLock } from "react-icons/lu";
@@ -9,7 +9,6 @@ import { RiGlobalLine } from "react-icons/ri";
 import { IoClose } from "react-icons/io5";
 
 export default function Home() {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -40,8 +39,8 @@ export default function Home() {
 
   const handleLogin = async (email: string, password: string) => {
     console.log(email);
-    setLoading(true)
-    setErrorMsg("")
+    setLoading(true);
+    setErrorMsg("");
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/login`,
@@ -61,14 +60,17 @@ export default function Home() {
       if (!response.ok) {
         const data = await response.json();
         console.log(data);
-        setLoading(false);
-        setErrorMsg("Error occurred. Please try again")
+        setTimeout(() => {
+          setLoading(false);
+          setErrorMsg("Incorrect email or password.");
+        }, 2000);
+
         return;
       }
 
       const data = await response.json();
-      console.log(data.token.success)
-      if (!data.token.success) {
+      console.log(data.token.success);
+      /*       if (!data.token.success) {
         console.log("invalid");
         
         setTimeout(() => {
@@ -77,21 +79,22 @@ export default function Home() {
           setErrorMsg("Incorrect email or password.")
         }, 2000);
         return;
-      }
+      } */
       //console.log(data);
-      dispatch(loginSuccess({ token: data.token.token, restaurant: data.token.data }));
+      dispatch(
+        loginSuccess({ token: data.token.token, restaurant: data.token.data })
+      );
       //localStorage.setItem("authToken", data.token.token);
 
       // Redirect to another page (optional)
-      router.push('/user/dashboard');
+      router.push("/user/dashboard");
     } catch (err) {
       console.log(err);
       setTimeout(() => {
-          
         setLoading(false);
-        setErrorMsg("Error occurred. Please try again.")
+        setErrorMsg("Error occurred. Please try again.");
       }, 2000);
-    } 
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -101,6 +104,9 @@ export default function Home() {
 
   return (
     <div className="font-inter bg-[#f3f6fa] bg-[url('/builderbg.svg')] bg-cover bg-no-repeat h-[100vh] w-full text-my-black-950 relative">
+      {loading && (
+        <div className="absolute w-full h-full bg-[#616264]/15 left-0 top-0 z-10"></div>
+      )}
       <nav className=" flex justify-between absolute w-full left-0 top-0  py-4 px-4 md:px-8">
         <div className="text-[1.1rem] font-semibold text-my-dark-900 tracking-wide">
           SmartMenu
@@ -127,9 +133,11 @@ export default function Home() {
             className="relative bg-white login-bg-shadow rounded-md  flex flex-col gap-4 px-7  py-9 mt-6 [&_.LOGIN-INPUT]:w-full [&_.LOGIN-INPUT]:py-[0.45rem] [&_.LOGIN-INPUT]:px-9 [&_.LOGIN-INPUT]:border [&_.LOGIN-INPUT]:border-my-dark-300 [&_.LOGIN-INPUT]:rounded-md [&_.LOGIN-INPUT]:text-[0.95rem]"
           >
             {loading && (
-            <div className=" absolute w-[98%] h-1 top-0 left-[50%] translate-x-[-50%] bg-my-black-100">
-            <div className="absolute w-0 h-full bg-[#5d99fd] login-form-loading-ani"></div>
-          </div>
+    
+                <div className="z-[99] absolute w-[98%] h-1 top-0 left-[50%] translate-x-[-50%] bg-[#919396]/20">
+                  <div className="z-[99] absolute w-0 h-full bg-[#5d99fd] login-form-loading-ani"></div>
+                </div>
+ 
             )}
 
             <div>
@@ -143,26 +151,28 @@ export default function Home() {
             <hr></hr>
             <label className="relative mt-2">
               <input
-                className="peer LOGIN-INPUT focus:outline-my-secondary-400 hover:bg-my-dark-50 focus-within:bg-white  hover:focus-within:bg-white"
+                className="peer LOGIN-INPUT focus:outline-my-secondary-400 hover:bg-my-dark-50 focus-within:bg-white  hover:focus-within:bg-white "
                 type="text"
                 placeholder="Enter your Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 name="email"
+                disabled={loading}
               />
               <HiOutlineMail className="peer-focus:text-my-secondary-400 login-email-icon absolute left-3 top-[50%] translate-y-[-50%] text-[1.1rem] flex text-my-dark-600" />
             </label>
             <label className="relative">
               <input
                 autoComplete="new-password"
-                className="peer LOGIN-INPUT focus:outline-my-secondary-400 hover:bg-my-dark-50 focus-within:bg-white  hover:focus-within:bg-white"
+                className="peer LOGIN-INPUT focus:outline-my-secondary-400 hover:bg-my-dark-50 focus-within:bg-white  hover:focus-within:bg-white "
                 type="password"
                 placeholder="Enter your Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 name="password"
+                disabled={loading}
               />
               <LuLock className="peer-focus:text-my-secondary-400 absolute left-3 top-[50%] translate-y-[-50%] text-[1.1rem] flex text-my-dark-600" />
             </label>
@@ -179,10 +189,9 @@ export default function Home() {
             </div>
             {errorMsg && (
               <div className="flex gap-2 items-center rounded-sm border border-[#fec9c9] bg-[#fec9c9] text-[#720000] py-[0.45rem] px-3 text-[0.9rem]">
-
-                  <div className="bg-[#fb3d55] rounded-full w-[1.2rem] h-[1.2rem] flex justify-center items-center">
-                    <IoClose fill="#ffffff"  className="text-[0.9rem] flex" />
-                  </div>
+                <div className="bg-[#fb3d55] rounded-full w-[1.2rem] h-[1.2rem] flex justify-center items-center">
+                  <IoClose fill="#ffffff" className="text-[0.9rem] flex" />
+                </div>
 
                 {errorMsg}
               </div>
