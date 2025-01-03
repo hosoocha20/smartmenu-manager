@@ -39,7 +39,7 @@ export default function Home() {
   // }
 
   const handleLogin = async (email: string, password: string) => {
-    console.log(email + password);
+    console.log(email);
     setLoading(true)
     setErrorMsg("")
     try {
@@ -47,6 +47,7 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/login`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -79,11 +80,10 @@ export default function Home() {
       }
       //console.log(data);
       dispatch(loginSuccess({ token: data.token.token, restaurant: data.token.data }));
-      // Optionally, store the token in localStorage or cookies
-      localStorage.setItem("authToken", data.token.token);
+      //localStorage.setItem("authToken", data.token.token);
 
       // Redirect to another page (optional)
-      router.push('/dashboard');
+      router.push('/user/dashboard');
     } catch (err) {
       console.log(err);
       setTimeout(() => {

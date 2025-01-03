@@ -14,6 +14,8 @@ import { IoEarth } from "react-icons/io5";
 import { TbBulb } from "react-icons/tb";
 import { LuSettings } from "react-icons/lu";
 import { GoDotFill } from "react-icons/go";
+import { RootState } from "@/app/store/store";
+import { useSelector } from "react-redux";
 
 
 interface GetStartedLinksI {
@@ -39,7 +41,90 @@ const overviewArr: OverviewI[] = [
 ];
 
 const Dashboard = () => {
+  const authDetails = useSelector(
+    (state: RootState) => state.auth.restaurant.user
+  );
 
+  console.log(authDetails)
+  const handleGet = async () => {
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}Restaurant/get`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.log(data);
+
+        return;
+      }
+
+      const data = await response.json();
+      
+
+      console.log(data);
+
+      //localStorage.setItem("authToken", data.token.token);
+
+      // Redirect to another page (optional)
+ 
+    } catch (err) {
+      console.log(err);
+
+    } 
+  };
+  const logOut = async () => {
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.log(data);
+
+        return;
+      }
+
+      const data = await response.json();
+      
+
+      console.log(data);
+
+      //localStorage.setItem("authToken", data.token.token);
+
+      // Redirect to another page (optional)
+ 
+    } catch (err) {
+      console.log(err);
+
+    } 
+  };
+  const handleSubmit = () => {
+   
+    handleGet();
+  };
+
+  const handleLogOut = () => {
+   
+    logOut();
+  };
   return (
     <div className="font-inter bg-background px-6 py-4 overflow-y-auto">
       <h1 className="text-my-black-950 font-semibold text-[1.5rem] tracking-wide">
@@ -57,7 +142,7 @@ const Dashboard = () => {
                 Manage and build your digital menu:
               </p>
             </div>
-            <button className="w-fit mb-1 bg-my-secondary-400 text-white px-4 py-2 text-[.93rem] rounded-[.2rem]">
+            <button onClick={handleSubmit} className="w-fit mb-1 bg-my-secondary-400 text-white px-4 py-2 text-[.93rem] rounded-[.2rem]">
               Choose Your Design
             </button>
           </div>
@@ -164,7 +249,7 @@ const Dashboard = () => {
               </tr>
             </tbody>
           </table>
-          <button className="my-0 mx-auto mt-3 bg-royal-blue-400 rounded-sm px-6 py-1 text-white text-[0.9rem] flex items-center">
+          <button onClick={handleLogOut} className="my-0 mx-auto mt-3 bg-royal-blue-400 rounded-sm px-6 py-1 text-white text-[0.9rem] flex items-center">
             View More
             <MdOutlineKeyboardArrowRight className="flex text-[1.4rem]"/>
           </button>
