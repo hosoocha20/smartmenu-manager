@@ -213,12 +213,6 @@ const Dashboard = () => {
               <span className="font-medium">Admin Name:</span> {userDetails.fullname}
             </p>
             <p>
-              <span className="font-medium">Email:</span> {userDetails.email}
-            </p>
-            <p>
-              <span className="font-medium">Address:</span> {userDetails.address}
-            </p>
-            <p>
               <span className="font-medium">Opening Time:</span> {userDetails.openingTime}
             </p>
             <p>
