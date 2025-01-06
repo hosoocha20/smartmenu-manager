@@ -23,7 +23,7 @@ export default function AuthLayout({
 
   return (
 
-      <body className={`${inter.variable} antialiased`}>
+      <div className={`${inter.variable} antialiased`}>
 
           <Header />
           <div className="h-[calc(100vh-3.5rem)] grid grid-cols-[17rem_auto]">
@@ -31,7 +31,7 @@ export default function AuthLayout({
             {children}
           </div>
 
-      </body>
+      </div>
 
   );
 }

@@ -10,8 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/table";
+import { Pagination } from "@nextui-org/pagination";
 import { Select, SelectSection, SelectItem } from "@nextui-org/select";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
 import { IoIosSearch } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -48,6 +49,18 @@ const MenuCategory = () => {
       value: "Inactive",
     },
   ];
+
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 2;
+
+  const pages = Math.ceil(categoryTableData.length / rowsPerPage);
+
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return categoryTableData.slice(start, end);
+  }, [page, categoryTableData]);
 
   const dummyarr: MenuCategoryI[] = [
     {
@@ -130,7 +143,7 @@ const MenuCategory = () => {
     }
   }, []);
   return (
-    <div className="font-inter bg-[#ffffff] py-4 px-5">
+    <div className="font-inter bg-[#ffffff] py-4 px-5 flex flex-col">
       <h1 className="text-my-black-950 font-semibold text-[1.4rem] tracking-wide">
         Your Menu Categories
       </h1>
@@ -144,19 +157,23 @@ const MenuCategory = () => {
           />
         </label>
         <Select
-          className="flex flex-row border text-my-black-950 text-[0.87rem] max-w-[7rem] h-full rounded-md "
+          className=" text-my-black-950 text-[0.87rem] w-[7.5rem] h-full  "
           aria-label="Filter by Status"
           items={selectStatus}
           
-          
+          radius="sm"
+          data-hover="false"
+          classNames={{trigger: "bg-[#ffffff] border border-my-black-300  hover:bg-my-black-50",popoverContent:"bg-white  border-my-black-300 rounded-lg"}}
           defaultSelectedKeys={["all"]}
+          
+          
         >
-          <SelectSection className="bg-white text-[0.87rem] w-max left-0 border  rounded-md mx-0 ">
+          
           {selectStatus.map((status) => (
-            <SelectItem key={status.key} value={status.value} className=" text-my-black-950 " aria-label={status.value}>{status.value}</SelectItem>
+            <SelectItem key={status.key} value={status.value}  classNames={{base:"bg-white data-[hover=true]:bg-black "}} className=" text-my-black-950 data-[hover=true]:bg-black "  aria-label={status.value}>{status.value}</SelectItem>
           ))}
         
-          </SelectSection>
+          
         </Select>
 
         <button className="flex items-center gap-2 bg-primary-comp-600 text-[0.87rem] px-3 py-[0.35rem] rounded tracking-wide">
@@ -164,38 +181,54 @@ const MenuCategory = () => {
           Add Category
         </button>
       </div>
-      <Table
-        aria-label="Table for Managing Menu Categories"
-        className="bg-white border border-[#cccccc] border-opacity-50 mt-4"
-      >
-        <TableHeader className="" columns={cols}>
-          {(column) => (
-            <TableColumn
-              key={column.key}
-              className={`bg-[#f7f7f7] py-2 pl-7 border-b text-[0.87rem] font-medium text-[#5e6277] ${
-                column.key === "categoryName" ? "text-left" : "text-center"
-              }`}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={categoryTableData}>
-          {(item) => (
-            <TableRow key={item.id} className="">
-              {(columnKey) => (
-                <TableCell
-                  className={` text-[0.9rem] py-3 pl-7   border-b text-my-black-950 ${
-                    columnKey === "categoryName" ? "text-left" : "text-center "
-                  }`}
-                >
-                  {renderCell(item, columnKey)}
-                </TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <div className="border flex-1">
+        <Table
+          aria-label="Table for Managing Menu Categories"
+          className="bg-white  border-[#cccccc] border-opacity-50 mt-4 h-full"
+          classNames={{wrapper:"border border-[#cccccc] ", table:"h-full", td:""}}
+          bottomContent={
+            <div className="flex w-full justify-center">
+              <Pagination
+                isCompact
+                showControls
+                showShadow
+                color="secondary"
+                page={page}
+                total={pages}
+                onChange={(page) => setPage(page)}
+              />
+            </div>
+          }
+        >
+          <TableHeader className="" columns={cols}>
+            {(column) => (
+              <TableColumn
+                key={column.key}
+                className={`bg-[#f7f7f7] py-2 pl-7 border-b text-[0.87rem] font-medium text-[#5e6277] ${
+                  column.key === "categoryName" ? "text-left" : "text-center"
+                }`}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={items}>
+            {(item) => (
+              <TableRow key={item.id} className="">
+                {(columnKey) => (
+                  <TableCell
+                    className={` text-[0.9rem] py-3 pl-7   border-b text-my-black-950 ${
+                      columnKey === "categoryName" ? "text-left" : "text-center "
+                    }`}
+                  >
+                    {renderCell(item, columnKey)}
+                  </TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

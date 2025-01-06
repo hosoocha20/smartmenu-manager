@@ -24,6 +24,7 @@ export default function RootLayout({
         className={`${inter.variable} antialiased`}
       >
         <Providers>
+            
             {children}
         </Providers>
           

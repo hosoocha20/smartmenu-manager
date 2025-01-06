@@ -20,8 +20,8 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="en">
-      <body
+    
+      <div
         className={`${inter.variable} antialiased`}
       >
 
@@ -30,7 +30,7 @@ export default function RootLayout({
           
 
         
-      </body>
-    </html>
+      </div>
+   
   );
 }
