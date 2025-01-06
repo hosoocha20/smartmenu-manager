@@ -10,6 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/table";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@nextui-org/modal";
+import { Tooltip } from "@nextui-org/tooltip";
+import { Switch } from "@nextui-org/switch";
 import { Pagination } from "@nextui-org/pagination";
 import { Select, SelectSection, SelectItem } from "@nextui-org/select";
 import React, { useMemo, useState } from "react";
@@ -18,6 +28,7 @@ import { IoIosSearch } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { LuTrash } from "react-icons/lu";
 import { BiCategory } from "react-icons/bi";
+import { RxQuestionMarkCircled } from "react-icons/rx";
 import { BsThreeDots } from "react-icons/bs";
 import { useSelector } from "react-redux";
 
@@ -26,6 +37,8 @@ import { selectCategoryTableData } from "@/app/lib/selectors/categorySelectors";
 import { TiArrowUnsorted } from "react-icons/ti";
 
 const MenuCategory = () => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isActive, setIsActive] = useState(true);
   const cols = [
     { key: "categoryName", name: "Category Name" },
     { key: "subCategories", name: "No. Subcategories" },
@@ -160,23 +173,32 @@ const MenuCategory = () => {
           className=" text-my-black-950 text-[0.87rem] w-[7.5rem] h-full  "
           aria-label="Filter by Status"
           items={selectStatus}
-          
           radius="sm"
           data-hover="false"
-          classNames={{trigger: "bg-[#ffffff] border border-my-black-300  hover:bg-my-black-50",popoverContent:"bg-white  border-my-black-300 rounded-lg"}}
+          classNames={{
+            trigger:
+              "bg-[#ffffff] border border-my-black-300  hover:bg-my-black-50",
+            popoverContent: "bg-white  border-my-black-300 rounded-lg",
+          }}
           defaultSelectedKeys={["all"]}
-          
-          
         >
-          
           {selectStatus.map((status) => (
-            <SelectItem key={status.key} value={status.value}  classNames={{base:"bg-white data-[hover=true]:bg-black "}} className=" text-my-black-950 data-[hover=true]:bg-black "  aria-label={status.value}>{status.value}</SelectItem>
+            <SelectItem
+              key={status.key}
+              value={status.value}
+              classNames={{ base: "bg-white data-[hover=true]:bg-black " }}
+              className=" text-my-black-950 data-[hover=true]:bg-black "
+              aria-label={status.value}
+            >
+              {status.value}
+            </SelectItem>
           ))}
-        
-          
         </Select>
 
-        <button className="flex items-center gap-2 bg-primary-comp-600 text-[0.87rem] px-3 py-[0.35rem] rounded tracking-wide">
+        <button
+          onClick={onOpen}
+          className="flex items-center gap-2 bg-primary-comp-600 text-[0.87rem] px-3 py-[0.35rem] rounded tracking-wide"
+        >
           <HiOutlinePlus className="flex text-[1.2rem]" />
           Add Category
         </button>
@@ -185,7 +207,11 @@ const MenuCategory = () => {
         <Table
           aria-label="Table for Managing Menu Categories"
           className="bg-white  border-[#cccccc] border-opacity-50 mt-4 h-full"
-          classNames={{wrapper:"border border-[#cccccc] ", table:"h-full", td:""}}
+          classNames={{
+            wrapper: "border border-[#cccccc] ",
+            table: "h-full",
+            td: "",
+          }}
           bottomContent={
             <div className="flex w-full justify-center">
               <Pagination
@@ -218,7 +244,9 @@ const MenuCategory = () => {
                 {(columnKey) => (
                   <TableCell
                     className={` text-[0.9rem] py-3 pl-7   border-b text-my-black-950 ${
-                      columnKey === "categoryName" ? "text-left" : "text-center "
+                      columnKey === "categoryName"
+                        ? "text-left"
+                        : "text-center "
                     }`}
                   >
                     {renderCell(item, columnKey)}
@@ -229,6 +257,62 @@ const MenuCategory = () => {
           </TableBody>
         </Table>
       </div>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
+        <ModalContent className="text-my-black-950 font-inter">
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 ">
+                Add New Category
+              </ModalHeader>
+              <ModalBody className="border">
+                <hr></hr>
+                <form className="flex flex-col gap-6">
+                  <label className="flex flex-col text-[0.97rem] font-medium gap-1">
+                    Name
+                    <input
+                      className="focus:outline-none border rounded-md px-3 py-1 text-[0.9rem] font-normal"
+                      placeholder="Add your category name"
+                    />
+                  </label>
+
+                    <Switch
+                      isSelected={isActive}
+                      onValueChange={setIsActive}
+                      size="sm"
+                      color="success"
+                      className="!z-[999999]"
+                      classNames={{
+                        label: "flex items-center gap-1 text-[0.97rem] !z-[999999]",
+                      }}
+                    >
+                      Active
+                      <Tooltip content="Whether the category is displayed in menu." placement="top-start" className="!z-[999999] text-my-black-950" >
+                        <div>
+                          <RxQuestionMarkCircled className="flex text-[1rem] text-my-black-700" />
+                        </div>
+                      </Tooltip>
+                      
+                    </Switch>
+
+
+                  <div className="w-full mt-7 flex justify-end gap-3 *:border *:py-1 *:px-4 *:rounded-md *:text-[0.9rem] *:tracking-wide">
+                    <button type="button">Close</button>
+                    <button type="submit" className="bg-[#3aa0fc] text-white">
+                      Add Now
+                    </button>
+                  </div>
+                </form>
+              </ModalBody>
+              <ModalFooter></ModalFooter>
+              {/* <ModalFooter>
+                <div>
+                  <button>Close</button>
+                </div>
+              </ModalFooter> */}
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

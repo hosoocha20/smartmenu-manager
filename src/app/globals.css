@@ -77,3 +77,7 @@ body {
     left: unset;
   }
 }
+
+.nextui-tooltip{
+  z-index: 9999999 !important;
+}

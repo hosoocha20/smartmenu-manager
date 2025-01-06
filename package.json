@@ -13,6 +13,7 @@
     "@nextui-org/modal": "^2.2.7",
     "@nextui-org/pagination": "^2.2.8",
     "@nextui-org/select": "^2.4.8",
+    "@nextui-org/switch": "^2.2.8",
     "@nextui-org/table": "^2.0.40",
     "@nextui-org/tooltip": "^2.2.7",
     "@reduxjs/toolkit": "^2.5.0",
