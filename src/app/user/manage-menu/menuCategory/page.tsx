@@ -61,28 +61,42 @@ const MenuCategory = () => {
     { key: "status", name: "Status" },
     { key: "action", name: "" },
   ];
-
-  // const categories = useSelector((state: RootState) => state.auth.restaurant.categories);
-  // console.log(categories);
-  const categoryTableData = useSelector(selectCategoryTableData);
+  //Filter by Status
+  const [filterStatus, setFilterStatus] = useState<boolean | null>(null); // null for all, true for active, false for inactive
+  const [statusValue, setStatusValue] = useState("all");
+  const categoryTableData = useSelector(selectCategoryTableData(filterStatus));
   //console.log(categoryTableData);
   const selectStatus = [
     {
       key: "all",
-      value: "All Status",
+      name: "All Status",
+      value: null
     },
     {
       key: "active",
-      value: "Active",
+      name: "Active",
+      value: true
     },
     {
       key: "inactive",
-      value: "Inactive",
+      name: "Inactive",
+      value: false
     },
   ];
 
+  const handleSelectionChange = (e:any) =>{
+    setStatusValue(e.target.value)
+    
+    if (e.target.value === 'active')
+      setFilterStatus(true);
+    else if (e.target.value === 'inactive')
+      setFilterStatus(false)
+    else
+      setFilterStatus(null);
+  }
+
   const [page, setPage] = useState(1);
-  const rowsPerPage = 5;
+  const rowsPerPage = 8;
 
   const pages = Math.ceil(categoryTableData.length / rowsPerPage);
 
@@ -194,16 +208,18 @@ const MenuCategory = () => {
             popoverContent: "bg-white  border-my-black-300 rounded-lg",
           }}
           defaultSelectedKeys={["all"]}
+          selectedKeys={[statusValue]}
+          onChange={handleSelectionChange}
         >
           {selectStatus.map((status) => (
             <SelectItem
               key={status.key}
-              value={status.value}
               classNames={{ base: "bg-white data-[hover=true]:bg-black " }}
               className=" text-my-black-950 data-[hover=true]:bg-black "
-              aria-label={status.value}
+              
+
             >
-              {status.value}
+              {status.name}
             </SelectItem>
           ))}
         </Select>
