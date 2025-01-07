@@ -18,28 +18,42 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/modal";
+import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import { Tooltip } from "@nextui-org/tooltip";
 import { Switch } from "@nextui-org/switch";
 import { Pagination } from "@nextui-org/pagination";
 import { Select, SelectSection, SelectItem } from "@nextui-org/select";
 import React, { useMemo, useState } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoMdEye } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { LuTrash } from "react-icons/lu";
+import { LuTrash2 } from "react-icons/lu";
 import { BiCategory } from "react-icons/bi";
 import { MdInfo } from "react-icons/md";
 import { RxQuestionMarkCircled } from "react-icons/rx";
-import { BsThreeDots } from "react-icons/bs";
-import { useSelector } from "react-redux";
+import { TbEdit } from "react-icons/tb";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
 
 import { selectCategoryTableData } from "@/app/lib/selectors/categorySelectors";
 
 import { TiArrowUnsorted } from "react-icons/ti";
+import { createNewCategory } from "@/app/store/thunks/categoryThunks";
+import { AppDispatch, RootState } from "@/app/store/store";
 
 const MenuCategory = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  //redux
+  const dispatch = useDispatch<AppDispatch>();
+  //Form States
+  const [errorMsg, setErrorMsg] = useState("");
+  const [newCategoryName, setNewCategoryName] = useState("");
   const [isActive, setIsActive] = useState(true);
+
+  //Modal States
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  
+
+  //Table
   const cols = [
     { key: "categoryName", name: "Category Name" },
     { key: "subCategories", name: "No. Subcategories" },
@@ -47,6 +61,9 @@ const MenuCategory = () => {
     { key: "status", name: "Status" },
     { key: "action", name: "" },
   ];
+
+  // const categories = useSelector((state: RootState) => state.auth.restaurant.categories);
+  // console.log(categories);
   const categoryTableData = useSelector(selectCategoryTableData);
   //console.log(categoryTableData);
   const selectStatus = [
@@ -65,7 +82,7 @@ const MenuCategory = () => {
   ];
 
   const [page, setPage] = useState(1);
-  const rowsPerPage = 2;
+  const rowsPerPage = 5;
 
   const pages = Math.ceil(categoryTableData.length / rowsPerPage);
 
@@ -76,56 +93,23 @@ const MenuCategory = () => {
     return categoryTableData.slice(start, end);
   }, [page, categoryTableData]);
 
-  const dummyarr: MenuCategoryI[] = [
-    {
-      key: 1,
-      categoryName: "Appetizers",
-      subCategories: ["a", "b", "c"],
-      items: ["a", "b", "c"],
-    },
-    {
-      key: 2,
-      categoryName: "Salads",
-      subCategories: [],
-      items: ["a", "b", "c"],
-    },
-    {
-      key: 3,
-      categoryName: "Daily Lunch Specials",
-      subCategories: [],
-      items: ["a", "b", "c", "d", "e", "f"],
-    },
-    {
-      key: 4,
-      categoryName: "Pizza",
-      subCategories: [],
-      items: ["a", "b", "c", "d", "e", "f"],
-    },
-    {
-      key: 5,
-      categoryName: "Pasta",
-      subCategories: ["a", "b", "c"],
-      items: ["a", "b", "c", "d", "e"],
-    },
-    {
-      key: 6,
-      categoryName: "Kids Corner",
-      subCategories: [],
-      items: ["a", "b", "c", "d", "e"],
-    },
-    {
-      key: 7,
-      categoryName: "Dessert",
-      subCategories: [],
-      items: ["a", "b", "c"],
-    },
-    {
-      key: 8,
-      categoryName: "Beverages",
-      subCategories: ["a", "b", "c", "d"],
-      items: ["a", "b", "c", "d", "e", "f", "g", "h", "i"],
-    },
-  ];
+  const handleCreateNewCategorySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+
+
+    try {
+      await dispatch(createNewCategory({newCategoryName, isActive })).unwrap();
+      setNewCategoryName('');
+      setIsActive(true);
+      alert('Category created successfully!');
+      onClose();
+    } catch (error) {
+      console.error('Error creating category:', error);
+      alert('Failed to create category.');
+    }
+  };
+
 
   //render table dynamically using items prop and providing a render function allows react-aria to automatically
   //cache the results of rendering each item and avoid re-rendering all items in the collection when only one of them changes.
@@ -141,16 +125,44 @@ const MenuCategory = () => {
       case "status":
         return (
           <div className="flex justify-center items-center">
-            <p className="px-7 py-1 bg-[#d7e7ff] text-[#3985f7] w-fit font-semibold text-[0.75rem]  rounded-full">
-              Active
+            <p
+              className={`w-[6rem] py-1 ${
+                row.status
+                  ? "bg-[#d7e7ff] text-[#3985f7]"
+                  : "bg-[#fde6e7] text-[#ea4a68]"
+              }  font-semibold text-[0.75rem]  rounded-full`}
+            >
+              {row.status ? "Active" : "Inactive"}
             </p>
           </div>
         );
       case "action":
         return (
-          <div className="flex justify-center items-center">
-            <BsThreeDots />
-          </div>
+          <Popover placement="left-start" backdrop="opaque" classNames={{content: "p-2 rounded-md"}}>
+            <PopoverTrigger>
+              <button>
+                <BsThreeDotsVertical />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="font-inter  w-[10rem]  flex flex-col gap-1  text-sm  ">
+                <button className="flex items-center gap-2 p-2 text-[#6a6c6e] hover:bg-[#f8f8f8] hover:text-[#5b5d5f] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
+                  <IoMdEye className="text-[1.1rem]"/>
+                  <p>View</p>
+                </button>
+                <button className="flex items-center gap-2 p-2 text-[#6a6c6e] hover:bg-[#f8f8f8] hover:text-[#5b5d5f] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
+                  <TbEdit className="text-[1.1rem]"/>
+                  <p>Edit</p>
+                </button>
+                <hr className="mt-1"></hr>
+                <button className="mt-1 flex items-center gap-2 p-2 text-[#eb4865] hover:bg-[#fde6e7] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
+                  <LuTrash2 className="text-[1.1rem]"/>
+                  <p className="">Delete</p>
+                </button>
+                
+              </div>
+            </PopoverContent>
+          </Popover>
         );
       default:
         return cellValue;
@@ -204,7 +216,7 @@ const MenuCategory = () => {
           Add Category
         </button>
       </div>
-      <div className="border flex-1">
+      <div className=" flex-1">
         <Table
           aria-label="Table for Managing Menu Categories"
           className="bg-white  border-[#cccccc] border-opacity-50 mt-4 h-full"
@@ -219,10 +231,11 @@ const MenuCategory = () => {
                 isCompact
                 showControls
                 showShadow
-                color="secondary"
+                color="primary"
                 page={page}
                 total={pages}
                 onChange={(page) => setPage(page)}
+                classNames={{prev: "rounded-md", next:"rounded-md", cursor:"rounded-md"}}
               />
             </div>
           }
@@ -267,12 +280,14 @@ const MenuCategory = () => {
               </ModalHeader>
               <ModalBody className="pt-0">
                 <hr></hr>
-                <form className="flex flex-col gap-6">
+                <form className="flex flex-col gap-6" onSubmit={(e)=>handleCreateNewCategorySubmit(e)}>
                   <label className="flex flex-col text-[0.97rem]  gap-2">
                     Name
                     <input
                       className="focus:outline-none placeholder-gray-400 placeholder:font-light border-2 border-my-black-100 rounded-md px-3 py-2 text-[0.89rem] "
                       placeholder="Add category name"
+                      value={newCategoryName}
+                      onChange={(e)=>setNewCategoryName(e.target.value)}
                     />
                   </label>
 
@@ -342,3 +357,7 @@ const MenuCategory = () => {
 };
 
 export default MenuCategory;
+function dispatch(arg0: any) {
+  throw new Error("Function not implemented.");
+}
+

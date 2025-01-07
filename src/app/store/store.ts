@@ -1,7 +1,9 @@
 'use client'
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import authReducer from './slices/authSlice';
+
+
 import storage from 'redux-persist/lib/storage';
 
 const persistConfig = {
@@ -12,6 +14,7 @@ const persistConfig = {
 
   const rootReducer = combineReducers({
     auth: authReducer,
+
 
   });
   
@@ -33,7 +36,12 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action
+>;
 //export default store;
 
 export const persistor = persistStore(store);

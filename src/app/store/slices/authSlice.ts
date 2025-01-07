@@ -8,6 +8,11 @@ interface AuthState {
   token: string | null;
   restaurant: any | null;
 }
+interface Category {
+  id: number;
+  name: string;
+  active: boolean;
+}
 /* const initialState: AuthState = {
   isAuthenticated: false,
   token: "",
@@ -54,10 +59,16 @@ const authSlice = createSlice({
       state.token = null;
       state.restaurant = null;
     },
+    addCategoryToRestaurant(state, action: PayloadAction<Category>) {
+      const category = action.payload;
+      if (state.restaurant && state.restaurant.categories) {
+        state.restaurant.categories[category.id] = category;
+      }
+    },
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout, addCategoryToRestaurant } = authSlice.actions;
 export default authSlice.reducer;
 
 //state.restaurant = normalizeRestaurantData(action.payload.restaurant);

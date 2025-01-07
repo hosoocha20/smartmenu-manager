@@ -28,6 +28,7 @@ export const selectCategoryTableData = createSelector(
         categoryName: category.name,
         subcategoryCount: subcategoryIds.length,
         itemCount: itemCountFromSub + itemCountFromCat,
+        status: category.active
       };
     });
   }

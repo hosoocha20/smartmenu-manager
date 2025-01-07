@@ -30,8 +30,8 @@ export interface NormalizedState {
         posProvider: string;
       };
     menus: Record<number, { id: number; name: string }>;
-    categories: Record<number, { id: number; name: string }>;
-    subcategories: Record<number, { id: number; name: string; categoryId: number }>;
+    categories: Record<number, { id: number; name: string; active: boolean }>;
+    subcategories: Record<number, { id: number; name: string; categoryId: number; active: boolean }>;
     products: Record<number, { id: number; name: string; price: number; subcategoryId?: number; categoryId: number }>;
     labels: Record<number, { id: number; name: string }>;
     productLabels: { productId: number; labelId: number }[];
@@ -99,7 +99,7 @@ export interface NormalizedState {
 
     // Normalize categories
     menu.categories.forEach((category: any) => {
-      normalizedState.categories[category.id] = { id: category.id, name: category.name };
+      normalizedState.categories[category.id] = { id: category.id, name: category.name, active: category.active };
          // Normalize products for no subcat
             // Normalize products
             category.products.forEach((product: any) => {
@@ -141,6 +141,7 @@ export interface NormalizedState {
         normalizedState.subcategories[subcategory.id] = {
           id: subcategory.id,
           name: subcategory.name,
+          active: subcategory.active,
           categoryId: category.id,
         };
 
