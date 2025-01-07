@@ -28,6 +28,7 @@ import { IoIosSearch } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { LuTrash } from "react-icons/lu";
 import { BiCategory } from "react-icons/bi";
+import { MdInfo } from "react-icons/md";
 import { RxQuestionMarkCircled } from "react-icons/rx";
 import { BsThreeDots } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -261,49 +262,72 @@ const MenuCategory = () => {
         <ModalContent className="text-my-black-950 font-inter">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 ">
+              <ModalHeader className="flex flex-col gap-1 text-[1.1rem] font-semibold tracking-wide pt-7">
                 Add New Category
               </ModalHeader>
-              <ModalBody className="border">
+              <ModalBody className="pt-0">
                 <hr></hr>
                 <form className="flex flex-col gap-6">
-                  <label className="flex flex-col text-[0.97rem] font-medium gap-1">
+                  <label className="flex flex-col text-[0.97rem]  gap-2">
                     Name
                     <input
-                      className="focus:outline-none border rounded-md px-3 py-1 text-[0.9rem] font-normal"
-                      placeholder="Add your category name"
+                      className="focus:outline-none placeholder-gray-400 placeholder:font-light border-2 border-my-black-100 rounded-md px-3 py-2 text-[0.89rem] "
+                      placeholder="Add category name"
                     />
                   </label>
 
-                    <Switch
-                      isSelected={isActive}
-                      onValueChange={setIsActive}
-                      size="sm"
-                      color="success"
-                      className="!z-[999999]"
-                      classNames={{
-                        label: "flex items-center gap-1 text-[0.97rem] !z-[999999]",
-                      }}
-                    >
-                      Active
-                      <Tooltip content="Whether the category is displayed in menu." placement="top-start" className="!z-[999999] text-my-black-950" >
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <h4 className="text-[0.97rem] ">Display</h4>
+                      <Tooltip
+                        content="Setting this inactive will hide all items within this category."
+                        placement="top-start"
+                        className="!z-[999999] text-my-black-950"
+                      >
                         <div>
-                          <RxQuestionMarkCircled className="flex text-[1rem] text-my-black-700" />
+                          <MdInfo className="flex text-[1rem] text-my-black-700" />
                         </div>
                       </Tooltip>
-                      
-                    </Switch>
-
-
-                  <div className="w-full mt-7 flex justify-end gap-3 *:border *:py-1 *:px-4 *:rounded-md *:text-[0.9rem] *:tracking-wide">
-                    <button type="button">Close</button>
-                    <button type="submit" className="bg-[#3aa0fc] text-white">
-                      Add Now
-                    </button>
+                    </div>
+                    <div className="flex mt-1 gap-[4rem] ">
+                      <p className="text-[0.86rem] text-my-black-900 ">
+                        Controlls whether the category is displayed in the menu.
+                      </p>
+                      <Switch
+                        isSelected={isActive}
+                        onValueChange={setIsActive}
+                        size="sm"
+                        className=""
+                        classNames={{
+                          wrapper: " group-data-[selected=true]:!bg-[#4dd164]",
+                          label: "flex items-center gap-1 text-[0.86rem] ",
+                        }}
+                      >
+                        {isActive ? "Active" : "Inactive"}
+                      </Switch>
+                    </div>
                   </div>
+
+                  <ModalFooter className=" px-0">
+                    <div className=" w-full mt-7 flex justify-end gap-3  *:py-1 *:px-4 *:rounded-md *:text-[0.9rem] *:tracking-wide">
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        className="text-my-accent-500 font-medium border border-transparent hover:border-my-accent-300"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-[#3aa0fc] text-white border border-[#3aa0fc] hover:bg-[#3aa0fc]/95"
+                      >
+                        Add Now
+                      </button>
+                    </div>
+                  </ModalFooter>
                 </form>
               </ModalBody>
-              <ModalFooter></ModalFooter>
+
               {/* <ModalFooter>
                 <div>
                   <button>Close</button>
