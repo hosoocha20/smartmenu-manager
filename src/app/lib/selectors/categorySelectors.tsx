@@ -12,6 +12,7 @@ export const selectCategoryTableData = (filterStatus: boolean | null) =>
     (categories, subcategories, products) => {
       return Object.values(categories)
         .filter((category) => filterStatus === null || category.active === filterStatus)
+        .sort((a, b) => b.id - a.id) 
         .map((category) => {
           // Find subcategories related to the category
           const subcategoryIds = Object.values(subcategories)
