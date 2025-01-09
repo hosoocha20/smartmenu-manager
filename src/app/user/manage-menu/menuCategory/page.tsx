@@ -40,18 +40,22 @@ import { selectCategoryTableData } from "@/app/lib/selectors/categorySelectors";
 import { TiArrowUnsorted } from "react-icons/ti";
 import { createNewCategory } from "@/app/store/thunks/categoryThunks";
 import { AppDispatch, RootState } from "@/app/store/store";
+import { Toast, ToastWrapper } from "@/app/ui/Toast";
+import useToast from "@/app/hooks/useToast";
 
 const MenuCategory = () => {
   //redux
   const dispatch = useDispatch<AppDispatch>();
   //Form States
-  const [errorMsg, setErrorMsg] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
 
   //Modal States
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  
+
+  // Toast
+  const [toastMsg, setToastMsg] = useState<{ type: string; msg: string }[]>([]);
 
   //Table
   const cols = [
@@ -70,30 +74,27 @@ const MenuCategory = () => {
     {
       key: "all",
       name: "All Status",
-      value: null
+      value: null,
     },
     {
       key: "active",
       name: "Active",
-      value: true
+      value: true,
     },
     {
       key: "inactive",
       name: "Inactive",
-      value: false
+      value: false,
     },
   ];
 
-  const handleSelectionChange = (e:any) =>{
-    setStatusValue(e.target.value)
-    
-    if (e.target.value === 'active')
-      setFilterStatus(true);
-    else if (e.target.value === 'inactive')
-      setFilterStatus(false)
-    else
-      setFilterStatus(null);
-  }
+  const handleSelectionChange = (e: any) => {
+    setStatusValue(e.target.value);
+
+    if (e.target.value === "active") setFilterStatus(true);
+    else if (e.target.value === "inactive") setFilterStatus(false);
+    else setFilterStatus(null);
+  };
 
   const [page, setPage] = useState(1);
   const rowsPerPage = 8;
@@ -107,23 +108,30 @@ const MenuCategory = () => {
     return categoryTableData.slice(start, end);
   }, [page, categoryTableData]);
 
+  //Toast
+  const { toasts, addToast, removeToast } = useToast();
+
+  const showToast = (type: string, msg: string) => {
+    const toast = [...toastMsg, { type: type, msg: msg }];
+    setToastMsg(toast);
+  };
+
+  //API
   const handleCreateNewCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
-
     try {
-      await dispatch(createNewCategory({newCategoryName, isActive })).unwrap();
-      setNewCategoryName('');
+      await dispatch(createNewCategory({ newCategoryName, isActive })).unwrap();
+      setNewCategoryName("");
       setIsActive(true);
-      alert('Category created successfully!');
+      alert("Category created successfully!");
       onClose();
+      showToast("success", "Category was successfully created");
     } catch (error) {
-      console.error('Error creating category:', error);
-      alert('Failed to create category.');
+      console.error("Error creating category:", error);
+      alert("Failed to create category.");
     }
   };
-
 
   //render table dynamically using items prop and providing a render function allows react-aria to automatically
   //cache the results of rendering each item and avoid re-rendering all items in the collection when only one of them changes.
@@ -152,7 +160,11 @@ const MenuCategory = () => {
         );
       case "action":
         return (
-          <Popover placement="left-start" backdrop="opaque" classNames={{content: "p-2 rounded-md"}}>
+          <Popover
+            placement="left-start"
+            backdrop="opaque"
+            classNames={{ content: "p-2 rounded-md" }}
+          >
             <PopoverTrigger>
               <button>
                 <BsThreeDotsVertical />
@@ -161,19 +173,18 @@ const MenuCategory = () => {
             <PopoverContent>
               <div className="font-inter  w-[10rem]  flex flex-col gap-1  text-sm  ">
                 <button className="flex items-center gap-2 p-2 text-[#6a6c6e] hover:bg-[#f8f8f8] hover:text-[#5b5d5f] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
-                  <IoMdEye className="text-[1.1rem]"/>
+                  <IoMdEye className="text-[1.1rem]" />
                   <p>View</p>
                 </button>
                 <button className="flex items-center gap-2 p-2 text-[#6a6c6e] hover:bg-[#f8f8f8] hover:text-[#5b5d5f] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
-                  <TbEdit className="text-[1.1rem]"/>
+                  <TbEdit className="text-[1.1rem]" />
                   <p>Edit</p>
                 </button>
                 <hr className="mt-1"></hr>
                 <button className="mt-1 flex items-center gap-2 p-2 text-[#eb4865] hover:bg-[#fde6e7] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
-                  <LuTrash2 className="text-[1.1rem]"/>
+                  <LuTrash2 className="text-[1.1rem]" />
                   <p className="">Delete</p>
                 </button>
-                
               </div>
             </PopoverContent>
           </Popover>
@@ -216,8 +227,6 @@ const MenuCategory = () => {
               key={status.key}
               classNames={{ base: "bg-white data-[hover=true]:bg-black " }}
               className=" text-my-black-950 data-[hover=true]:bg-black "
-              
-
             >
               {status.name}
             </SelectItem>
@@ -230,6 +239,11 @@ const MenuCategory = () => {
         >
           <HiOutlinePlus className="flex text-[1.2rem]" />
           Add Category
+        </button>
+        <button
+          onClick={() => addToast('success', 'Created successfully!')}
+        >
+          Success
         </button>
       </div>
       <div className=" flex-1">
@@ -251,7 +265,11 @@ const MenuCategory = () => {
                 page={page}
                 total={pages}
                 onChange={(page) => setPage(page)}
-                classNames={{prev: "rounded-md", next:"rounded-md", cursor:"rounded-md"}}
+                classNames={{
+                  prev: "rounded-md",
+                  next: "rounded-md",
+                  cursor: "rounded-md",
+                }}
               />
             </div>
           }
@@ -296,14 +314,17 @@ const MenuCategory = () => {
               </ModalHeader>
               <ModalBody className="pt-0">
                 <hr></hr>
-                <form className="flex flex-col gap-6" onSubmit={(e)=>handleCreateNewCategorySubmit(e)}>
+                <form
+                  className="flex flex-col gap-6"
+                  onSubmit={(e) => handleCreateNewCategorySubmit(e)}
+                >
                   <label className="flex flex-col text-[0.97rem]  gap-2">
                     Name
                     <input
                       className="focus:outline-none placeholder-gray-400 placeholder:font-light border-2 border-my-black-100 rounded-md px-3 py-2 text-[0.89rem] "
                       placeholder="Add category name"
                       value={newCategoryName}
-                      onChange={(e)=>setNewCategoryName(e.target.value)}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
                     />
                   </label>
 
@@ -368,6 +389,10 @@ const MenuCategory = () => {
           )}
         </ModalContent>
       </Modal>
+      {/*Toast */}
+      <ToastWrapper toasts={toasts} removeToast={removeToast} />
+
+      {/* <Toast type={toastMsg.type} header={toastMsg.msg}/> */}
     </div>
   );
 };
@@ -376,4 +401,3 @@ export default MenuCategory;
 function dispatch(arg0: any) {
   throw new Error("Function not implemented.");
 }
-
