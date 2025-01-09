@@ -4,7 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 
 interface ToastProps{
     children?: React.ReactNode,
-    key: string;
+    id: string;
     type: string,
     header: string,
     removeToast: (id: string) => void;
@@ -28,7 +28,7 @@ export const ToastWrapper = (props:ToastWrapperProps) => {
         <div className='fixed right-4 bottom-4 flex flex-col gap-3'>
             {props.toasts.map((toast: ToastData) => {
                 return(
-                    <Toast key={toast.id} type={toast.type} header={toast.message} removeToast={props.removeToast} />
+                    <Toast key={toast.id} id={toast.id} type={toast.type} header={toast.message} removeToast={props.removeToast} />
                 )
             })}
         </div>
@@ -41,7 +41,7 @@ export const Toast = (props: ToastProps) => {
         <div className='absolute left-0  top-0 w-[4px] h-full bg-[#00a28c]'></div>
         <IoMdCheckmarkCircle className='text-[#00a28c] text-[1.2rem]'/>
         <h4 className={`font-semibold text-sm tracking-wide ${props.type === "success" ? "text-[#00a28c]" : props.type === "info" ? " " : props.type === "warning" ? "" : ""}`}>{props.header}</h4>
-        <button className='ml-8 justify-self-end text-my-black-800' onClick={() => props.removeToast(props.key)}>
+        <button className='ml-8 justify-self-end text-my-black-800' onClick={() => props.removeToast(props.id)}>
             <RxCross2 />
         </button>
     </div>
