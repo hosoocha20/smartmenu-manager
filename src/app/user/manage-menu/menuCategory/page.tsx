@@ -54,8 +54,7 @@ const MenuCategory = () => {
   //Modal States
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  // Toast
-  const [toastMsg, setToastMsg] = useState<{ type: string; msg: string }[]>([]);
+
 
   //Table
   const cols = [
@@ -111,10 +110,7 @@ const MenuCategory = () => {
   //Toast
   const { toasts, addToast, removeToast } = useToast();
 
-  const showToast = (type: string, msg: string) => {
-    const toast = [...toastMsg, { type: type, msg: msg }];
-    setToastMsg(toast);
-  };
+
 
   //API
   const handleCreateNewCategorySubmit = async (e: React.FormEvent) => {
@@ -126,10 +122,12 @@ const MenuCategory = () => {
       setIsActive(true);
       alert("Category created successfully!");
       onClose();
-      showToast("success", "Category was successfully created");
+      
     } catch (error) {
       console.error("Error creating category:", error);
-      alert("Failed to create category.");
+      onClose();
+      addToast('error', 'Error: Oops something went wrong. Please log in.')
+      
     }
   };
 
@@ -240,11 +238,7 @@ const MenuCategory = () => {
           <HiOutlinePlus className="flex text-[1.2rem]" />
           Add Category
         </button>
-        <button
-          onClick={() => addToast('success', 'Created successfully!')}
-        >
-          Success
-        </button>
+        <button onClick={() =>addToast('error', 'Error: Oops something went wrong. Please log in')}>Error</button>
       </div>
       <div className=" flex-1">
         <Table

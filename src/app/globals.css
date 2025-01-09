@@ -81,3 +81,17 @@ body {
 .nextui-tooltip{
   z-index: 9999999 !important;
 }
+
+/*Toast*/
+.toast-animation{
+  animation: toastAni 150ms ease-in-out;
+}
+@keyframes toastAni {
+  0% {
+    transform: translateY(16px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}

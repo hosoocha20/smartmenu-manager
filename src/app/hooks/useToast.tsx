@@ -13,7 +13,7 @@ const useToast = () => {
 
   const addToast = useCallback((type: ToastType, message: string) => {
     const id = Date.now().toString(); // Generate a unique ID
-    setToasts((prev) => [...prev, { id, type, message }]);
+    setToasts((prev) => [{ id, type, message }, ...prev]);
 
     setTimeout(() => {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
