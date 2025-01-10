@@ -1,19 +1,24 @@
 'use client'
-import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import { Action, combineReducers, configureStore, ThunkAction, UnknownAction } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import authReducer from './slices/authSlice';
-
+import menuReducer from './slices/menuSlice';
+import userReducer from './slices/userSlice';
+import themeReducer from './slices/themeSlice';
 
 import storage from 'redux-persist/lib/storage';
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth'], // Specify slices to persist
+    whitelist: ['auth', 'menu', 'user', 'theme'], // Specify slices to persist
   };
 
   const rootReducer = combineReducers({
     auth: authReducer,
+    menu: menuReducer,
+    user: userReducer,
+    theme: themeReducer,
 
 
   });
@@ -39,7 +44,7 @@ export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,
-  unknown,
+  UnknownAction,
   Action
 >;
 //export default store;

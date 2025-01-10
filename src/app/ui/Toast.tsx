@@ -43,11 +43,11 @@ export const Toast = (props: ToastProps) => {
         success: <IoMdCheckmarkCircle className='text-[#00a28c] text-[1.2rem]'/>,
         info: <MdInfo className='text-[#2e84ec] text-[1.2rem]'/>,
         warning: <IoMdWarning className='text-[#f6b002] text-[1.2rem]'/>,
-        error: <IoMdCloseCircle className='text-[#fc4c4e] text-[1.2rem]'/>
+        error: <IoMdCloseCircle className='text-[#fc4c4e] text-[1.4rem]'/>
     }
     const toastIcon = iconMap[props.type] || null
   return (
-    <div className={`relative font-inter flex gap-3 items-center  border rounded-md px-4 py-4 w-[24rem] toast-animation ${props.type === "success" ? "bg-[#effaf9] border-[#74d4d2]/50" : props.type === "info" ? "bg-[#f0f4ff] border-[#2e84ec]/70" : props.type === "warning" ? "bg-[#fefcf0] border-[#f6b002]/70" : "bg-[#fef5f6] border-[#fc4c4e]/50"}`}>
+    <div className={`relative font-inter flex gap-3 items-top  border rounded-md px-4 py-4 w-[24rem] toast-animation ${props.type === "success" ? "bg-[#effaf9] border-[#74d4d2]/50" : props.type === "info" ? "bg-[#f0f4ff] border-[#2e84ec]/70" : props.type === "warning" ? "bg-[#fefcf0] border-[#f6b002]/70" : "bg-[#fef5f6] border-[#fc4c4e]/50"}`}>
         <div className={`absolute left-0  top-0 w-[4px] h-full  ${props.type === "success" ? "bg-[#00a28c] " : props.type === "info" ? "bg-[#2e84ec] " : props.type === "warning" ? "bg-[#f6b002] " : "bg-[#fc4c4e] "}`}></div>
         {toastIcon}
         <h4 className={`font-semibold text-sm tracking-wide mr-5 ${props.type === "success" ? "text-[#00a28c]" : props.type === "info" ? "text-[#2e84ec] " : props.type === "warning" ? "text-[#f6b002]" : "text-[#fc4c4e]"}`}>{props.header}</h4>

@@ -19,6 +19,13 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownSection,
+  DropdownItem,
+} from "@nextui-org/dropdown";
 import { Tooltip } from "@nextui-org/tooltip";
 import { Switch } from "@nextui-org/switch";
 import { Pagination } from "@nextui-org/pagination";
@@ -29,7 +36,7 @@ import { IoIosSearch, IoMdEye } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { LuTrash2 } from "react-icons/lu";
 import { BiCategory } from "react-icons/bi";
-import { MdInfo } from "react-icons/md";
+import { MdInfo, MdErrorOutline } from "react-icons/md";
 import { RxQuestionMarkCircled } from "react-icons/rx";
 import { TbEdit } from "react-icons/tb";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -38,10 +45,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectCategoryTableData } from "@/app/lib/selectors/categorySelectors";
 
 import { TiArrowUnsorted } from "react-icons/ti";
-import { createNewCategory } from "@/app/store/thunks/categoryThunks";
+import {
+  createNewCategory,
+  deleteCategoryThunk,
+} from "@/app/store/thunks/categoryThunks";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { Toast, ToastWrapper } from "@/app/ui/Toast";
 import useToast from "@/app/hooks/useToast";
+import { deleteCategory } from "@/app/services/categoryApi";
+import { MenuState } from "@/app/store/slices/menuSlice";
 
 const MenuCategory = () => {
   //redux
@@ -53,8 +65,22 @@ const MenuCategory = () => {
 
   //Modal States
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
-
+  const deleteModel = useDisclosure();
+  const [selectedCategory, setSelectedCategory] = useState<{
+    categoryId: number;
+    categoryName: string;
+  }>();
+  //Popover state
+  const [actionIsOpen, setActionIsOpen] = useState(-1);
+  const [allActionOpenStates, setAllActionOpenStates] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const toggleAction = (id: number, isOpen: boolean) => {
+    setAllActionOpenStates((prev) => ({
+      ...prev,
+      [id]: isOpen,
+    }));
+  };
 
   //Table
   const cols = [
@@ -67,6 +93,11 @@ const MenuCategory = () => {
   //Filter by Status
   const [filterStatus, setFilterStatus] = useState<boolean | null>(null); // null for all, true for active, false for inactive
   const [statusValue, setStatusValue] = useState("all");
+  const userDetails = useSelector((state: RootState) => state.user);
+
+  console.log(userDetails);
+  const selectCategories = useSelector((state: RootState) => state.menu);
+  console.log(selectCategories);
   const categoryTableData = useSelector(selectCategoryTableData(filterStatus));
   //console.log(categoryTableData);
   const selectStatus = [
@@ -110,25 +141,41 @@ const MenuCategory = () => {
   //Toast
   const { toasts, addToast, removeToast } = useToast();
 
-
-
   //API
   const handleCreateNewCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       await dispatch(createNewCategory({ newCategoryName, isActive })).unwrap();
+      onClose();
       setNewCategoryName("");
       setIsActive(true);
-      alert("Category created successfully!");
-      onClose();
-      
+      //alert("Category created successfully!");
     } catch (error) {
       console.error("Error creating category:", error);
       onClose();
-      addToast('error', 'Error: Oops something went wrong. Please log in.')
-      
+      addToast("error", "Error: Oops something went wrong. Please log in.");
     }
+  };
+  const handleCategoryDelete = async (categoryId: number) => {
+    //setActionIsOpen(false)
+    try {
+      await dispatch(deleteCategoryThunk({ categoryId })).unwrap();
+      onClose();
+      alert("Category deleted successfully!");
+    } catch (error) {
+      console.error("Error creating category:", error);
+
+      addToast("error", "Error: Oops something went wrong. Please log in.");
+    }
+  };
+
+  const handleDeleteModal = (categoryId: number, categoryName: string) => {
+    setSelectedCategory((prev) => ({
+      categoryId: categoryId,
+      categoryName: categoryName,
+    }));
+    deleteModel.onOpen();
   };
 
   //render table dynamically using items prop and providing a render function allows react-aria to automatically
@@ -158,34 +205,89 @@ const MenuCategory = () => {
         );
       case "action":
         return (
-          <Popover
-            placement="left-start"
-            backdrop="opaque"
-            classNames={{ content: "p-2 rounded-md" }}
-          >
-            <PopoverTrigger>
+          <Dropdown placement="left-start" className="rounded-md">
+            <DropdownTrigger>
               <button>
                 <BsThreeDotsVertical />
               </button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Static Actions" className="font-inter">
+              <DropdownItem
+                key="view"
+                data-hover={false}
+                startContent={<IoMdEye className="text-[1.2rem]" />}
+                className="p-2 text-[#6a6c6e] data-[hover]:bg-[#f4f4f5] data-[hover]:text-[#5b5d5f] data-[hover]:font-medium rounded-[0.25rem]"
+                classNames={{ base: "" }}
+              >
+                View
+              </DropdownItem>
+              <DropdownItem
+                key="edit"
+                data-hover={false}
+                startContent={<TbEdit className="text-[1.2rem]" />}
+                showDivider
+                className="p-2 text-[#6a6c6e] data-[hover]:bg-[#f4f4f5] data-[hover]:text-[#5b5d5f] data-[hover]:font-medium rounded-[0.25rem]"
+              >
+                Edit
+              </DropdownItem>
+              <DropdownItem
+                key="delete"
+                onPress={() => handleDeleteModal(row.id, row.categoryName)}
+                data-hover={false}
+                className="p-2 text-[#eb4865] hover:bg-[#fde6e7]  rounded-[0.25rem]"
+                classNames={{
+                  base: "data-[hover]:bg-[#fde6e7]  data-[hover=true]:text-[#eb4865]",
+                  wrapper: "text-[#eb4865] ",
+                  title: "font-normal hover:font-medium",
+                }}
+                startContent={<LuTrash2 className="text-[1.2rem]" />}
+              >
+                Delete file
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+          /*           <Popover
+            key={row.id}
+            isOpen={allActionOpenStates[row.id]}
+            onOpenChange={(isOpen) => toggleAction(row.id, isOpen)}
+            placement="left-start"
+            backdrop="opaque"
+            
+            classNames={{ content: "p-2 rounded-md" }}
+          >
+            <PopoverTrigger>
+              <button onClick={() => toggleAction(row.id, true)}>
+                <BsThreeDotsVertical />
+              </button>
             </PopoverTrigger>
+
             <PopoverContent>
-              <div className="font-inter  w-[10rem]  flex flex-col gap-1  text-sm  ">
+              <div
+                className="font-inter  w-[10rem]  flex flex-col gap-1  text-sm  "
+                data-category-id={row.id}
+              >
                 <button className="flex items-center gap-2 p-2 text-[#6a6c6e] hover:bg-[#f8f8f8] hover:text-[#5b5d5f] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
                   <IoMdEye className="text-[1.1rem]" />
                   <p>View</p>
                 </button>
-                <button className="flex items-center gap-2 p-2 text-[#6a6c6e] hover:bg-[#f8f8f8] hover:text-[#5b5d5f] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
+                <button
+                  onClick={() => toggleAction(row.id, false)}
+                  className="flex items-center gap-2 p-2 text-[#6a6c6e] hover:bg-[#f8f8f8] hover:text-[#5b5d5f] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out"
+                >
                   <TbEdit className="text-[1.1rem]" />
                   <p>Edit</p>
                 </button>
                 <hr className="mt-1"></hr>
-                <button className="mt-1 flex items-center gap-2 p-2 text-[#eb4865] hover:bg-[#fde6e7] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out">
+                <button
+                  onClick={() => handleCategoryDelete(row.id)}
+                  className="mt-1 flex items-center gap-2 p-2 text-[#eb4865] hover:bg-[#fde6e7] hover:font-medium rounded-[0.25rem] transition-all duration-150 ease-in-out"
+                >
                   <LuTrash2 className="text-[1.1rem]" />
                   <p className="">Delete</p>
                 </button>
               </div>
             </PopoverContent>
-          </Popover>
+          </Popover> */
         );
       default:
         return cellValue;
@@ -238,7 +340,13 @@ const MenuCategory = () => {
           <HiOutlinePlus className="flex text-[1.2rem]" />
           Add Category
         </button>
-        <button onClick={() =>addToast('error', 'Error: Oops something went wrong. Please log in')}>Error</button>
+        <button
+          onClick={() =>
+            addToast("error", "Error: Oops something went wrong. Please log in")
+          }
+        >
+          Error
+        </button>
       </div>
       <div className=" flex-1">
         <Table
@@ -299,6 +407,7 @@ const MenuCategory = () => {
           </TableBody>
         </Table>
       </div>
+      {/*Create Modal */}
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
         <ModalContent className="text-my-black-950 font-inter">
           {(onClose) => (
@@ -328,7 +437,7 @@ const MenuCategory = () => {
                       <Tooltip
                         content="Setting this inactive will hide all items within this category."
                         placement="top-start"
-                        className="!z-[999999] text-my-black-950"
+                        className="!z-[999999] text-my-black-950 rounded-sm"
                       >
                         <div>
                           <MdInfo className="flex text-[1rem] text-my-black-700" />
@@ -373,6 +482,53 @@ const MenuCategory = () => {
                   </ModalFooter>
                 </form>
               </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      {/*DeleteModal */}
+      <Modal
+        isOpen={deleteModel.isOpen}
+        onOpenChange={deleteModel.onOpenChange}
+        size="md"
+      >
+        <ModalContent className="text-my-black-950 font-inter">
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col  items-center justify-center gap-[0.6rem] text-[1.1rem] font-semibold tracking-wide pt-7 text-center pb-1">
+                <div className="relative bg-[#fccfd5]/90 p-2 rounded-full w-fit  before:absolute  before:w-full before:h-full before:rounded-full before:z-[-1] before:p-[1.4rem] before:left-[50%] before:top-[50%] before:translate-x-[-50%] before:translate-y-[-50%]   before:bg-[#fef2f3] before:border before:border-[#fccfd5]/60">
+                  <MdErrorOutline className="text-[1.4rem] text-[#eb4865]" />
+                </div>
+                <h2>Delete category</h2>
+              </ModalHeader>
+              <ModalBody className="pt-0 text-[0.88rem] text-center flex flex-col gap-0">
+                <p>
+                  Are you sure you want to delete '
+                  {selectedCategory?.categoryName}' category?
+                </p>
+                <p>
+                  All items within this category will be{" "}
+                  <b>permanently deleted</b>.
+                </p>
+              </ModalBody>
+              <ModalFooter className="mt-3">
+                <div className=" w-full  flex justify-end gap-3  *:py-1 *:px-5 *:rounded-md *:text-[0.9rem] *:tracking-wide">
+                  <button
+                    onClick={onClose}
+                    className="text-my-black-950 font-medium border border-transparent hover:border-my-black-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="bg-[#eb4865] text-white border border-[#eb4865] hover:bg-[#eb4865]/95"
+                    onClick={() =>
+                      handleCategoryDelete(selectedCategory!.categoryId)
+                    }
+                  >
+                    Delete
+                  </button>
+                </div>
+              </ModalFooter>
 
               {/* <ModalFooter>
                 <div>

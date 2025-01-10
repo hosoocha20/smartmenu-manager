@@ -7,6 +7,7 @@ import { HiOutlineMail } from "react-icons/hi";
 import { LuLock } from "react-icons/lu";
 import { RiGlobalLine } from "react-icons/ri";
 import { IoClose } from "react-icons/io5";
+import { normalizeAndSetData } from "../lib/normalizedUserData";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -69,7 +70,7 @@ export default function Home() {
       }
 
       const data = await response.json();
-      console.log(data.token.success);
+      console.log(data.token.data);
       /*       if (!data.token.success) {
         console.log("invalid");
         
@@ -81,8 +82,9 @@ export default function Home() {
         return;
       } */
       //console.log(data);
+      normalizeAndSetData(data.token.data, dispatch);
       dispatch(
-        loginSuccess({ token: data.token.token, restaurant: data.token.data })
+        loginSuccess({ token: data.token.token })
       );
       //localStorage.setItem("authToken", data.token.token);
 

@@ -16,6 +16,7 @@ import { LuSettings } from "react-icons/lu";
 import { GoDotFill } from "react-icons/go";
 import { RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
+import { UserState } from "@/app/store/slices/userSlice";
 
 
 interface GetStartedLinksI {
@@ -42,7 +43,7 @@ const overviewArr: OverviewI[] = [
 
 const Dashboard = () => {
   const userDetails = useSelector(
-    (state: RootState) => state.auth.restaurant.user
+    (state: RootState) => state.user
   );
 
   console.log(userDetails)

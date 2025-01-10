@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/dropdown": "^2.3.8",
+    "@nextui-org/dropdown": "^2.3.9",
     "@nextui-org/modal": "^2.2.7",
     "@nextui-org/pagination": "^2.2.8",
     "@nextui-org/popover": "^2.3.9",

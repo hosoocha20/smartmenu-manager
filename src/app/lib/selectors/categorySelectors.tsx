@@ -1,10 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { AppState } from '../types/selectorTypes';
-import { NormalizedState } from '../normalizedUserData';
 
-const selectCategories = (state: AppState) => state.auth.restaurant.categories || {};
-const selectSubcategories = (state: AppState) => state.auth.restaurant.subcategories || {};
-const selectProducts = (state: AppState) => state.auth.restaurant.products || {};
+import { MenuState } from '@/app/store/slices/menuSlice';
+import { RootState } from '@/app/store/store';
+
+const selectCategories = (state: RootState) => state.menu.categories || {};
+const selectSubcategories = (state: RootState) => state.menu.subcategories || {};
+const selectProducts = (state: RootState) => state.menu.products || {};
 
 export const selectCategoryTableData = (filterStatus: boolean | null) =>
   createSelector(

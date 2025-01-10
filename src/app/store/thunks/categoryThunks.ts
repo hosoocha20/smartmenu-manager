@@ -1,8 +1,8 @@
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { createCategory } from '@/app/services/categoryApi';
+import { createCategory, deleteCategory } from '@/app/services/categoryApi';
 
-import { addCategoryToRestaurant } from '../slices/authSlice';
+import { addCategoryToMenu, deleteCategoryToMenu } from '../slices/menuSlice';
 
 export const createNewCategory = createAsyncThunk(
   'categories/createNewCategory',
@@ -12,7 +12,7 @@ export const createNewCategory = createAsyncThunk(
   ) => {
     try {
         const newCategory = await createCategory(newCategoryName, isActive); 
-        dispatch(addCategoryToRestaurant(newCategory)); 
+        dispatch(addCategoryToMenu(newCategory)); 
         return newCategory; 
       } catch (error: any) {
         console.error('Error creating category:', error); 
@@ -20,5 +20,23 @@ export const createNewCategory = createAsyncThunk(
       }
   }
 );
+
+export const deleteCategoryThunk = createAsyncThunk(
+    'categories/deleteCategory',
+    async (
+      {categoryId }: {categoryId: number },
+      { dispatch }
+    ) => {
+      try {
+          const deleteCategoryResponse = await deleteCategory(categoryId); 
+          console.log("Re: ", deleteCategoryResponse)
+          dispatch(deleteCategoryToMenu(deleteCategoryResponse.data.id)); 
+          return deleteCategoryResponse.data.Id; 
+        } catch (error: any) {
+          console.error('Error deleting category:', error); 
+          throw error;
+        }
+    }
+  );
 
 
