@@ -93,9 +93,7 @@ const MenuCategory = () => {
   //Filter by Status
   const [filterStatus, setFilterStatus] = useState<boolean | null>(null); // null for all, true for active, false for inactive
   const [statusValue, setStatusValue] = useState("all");
-  const userDetails = useSelector((state: RootState) => state.user);
 
-  console.log(userDetails);
   const selectCategories = useSelector((state: RootState) => state.menu);
   console.log(selectCategories);
   const categoryTableData = useSelector(selectCategoryTableData(filterStatus));
