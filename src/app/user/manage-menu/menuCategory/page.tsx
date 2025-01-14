@@ -55,6 +55,14 @@ import useToast from "@/app/hooks/useToast";
 import { deleteCategory } from "@/app/services/categoryApi";
 import { MenuState } from "@/app/store/slices/menuSlice";
 
+interface RowData {
+  id: number,
+  categoryName: string,
+  subcategoryCount: number,
+  itemCount: number,
+  status: boolean
+}
+
 const MenuCategory = () => {
   //redux
   const dispatch = useDispatch<AppDispatch>();
@@ -65,11 +73,9 @@ const MenuCategory = () => {
 
   //Modal States
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const deleteModel = useDisclosure();
-  const [selectedCategory, setSelectedCategory] = useState<{
-    categoryId: number;
-    categoryName: string;
-  }>();
+  const deleteModal = useDisclosure();
+  const editModal = useDisclosure();
+  const [selectedCategory, setSelectedCategory] = useState<RowData>();
   //Popover state
   const [actionIsOpen, setActionIsOpen] = useState(-1);
   const [allActionOpenStates, setAllActionOpenStates] = useState<{
@@ -157,6 +163,7 @@ const MenuCategory = () => {
   };
   const handleCategoryDelete = async (categoryId: number) => {
     //setActionIsOpen(false)
+    deleteModal.onClose();
     try {
       await dispatch(deleteCategoryThunk({ categoryId })).unwrap();
       onClose();
@@ -168,13 +175,29 @@ const MenuCategory = () => {
     }
   };
 
-  const handleDeleteModal = (categoryId: number, categoryName: string) => {
+  const handleDeleteModal = (rowData: RowData) => {
     setSelectedCategory((prev) => ({
-      categoryId: categoryId,
-      categoryName: categoryName,
+      id: rowData.id,
+      categoryName: rowData.categoryName,
+      subcategoryCount: rowData.subcategoryCount,
+      itemCount: rowData.itemCount,
+      status: rowData.status,
     }));
-    deleteModel.onOpen();
+    deleteModal.onOpen();
   };
+
+  const handleEditModal = (rowData: RowData) =>{
+    setSelectedCategory((prev) => ({
+      id: rowData.id,
+      categoryName: rowData.categoryName,
+      subcategoryCount: rowData.subcategoryCount,
+      itemCount: rowData.itemCount,
+      status: rowData.status,
+    }));
+    setNewCategoryName(rowData.categoryName);
+    setIsActive(rowData.status)
+    editModal.onOpen();
+  } 
 
   //render table dynamically using items prop and providing a render function allows react-aria to automatically
   //cache the results of rendering each item and avoid re-rendering all items in the collection when only one of them changes.
@@ -221,6 +244,7 @@ const MenuCategory = () => {
               </DropdownItem>
               <DropdownItem
                 key="edit"
+                onPress={()=>handleEditModal(row)}
                 data-hover={false}
                 startContent={<TbEdit className="text-[1.2rem]" />}
                 showDivider
@@ -230,7 +254,7 @@ const MenuCategory = () => {
               </DropdownItem>
               <DropdownItem
                 key="delete"
-                onPress={() => handleDeleteModal(row.id, row.categoryName)}
+                onPress={() => handleDeleteModal(row)}
                 data-hover={false}
                 className="p-2 text-[#eb4865] hover:bg-[#fde6e7]  rounded-[0.25rem]"
                 classNames={{
@@ -486,8 +510,8 @@ const MenuCategory = () => {
       </Modal>
       {/*DeleteModal */}
       <Modal
-        isOpen={deleteModel.isOpen}
-        onOpenChange={deleteModel.onOpenChange}
+        isOpen={deleteModal.isOpen}
+        onOpenChange={deleteModal.onOpenChange}
         size="md"
       >
         <ModalContent className="text-my-black-950 font-inter">
@@ -520,7 +544,7 @@ const MenuCategory = () => {
                   <button
                     className="bg-[#eb4865] text-white border border-[#eb4865] hover:bg-[#eb4865]/95"
                     onClick={() =>
-                      handleCategoryDelete(selectedCategory!.categoryId)
+                      handleCategoryDelete(selectedCategory!.id)
                     }
                   >
                     Delete
@@ -533,6 +557,85 @@ const MenuCategory = () => {
                   <button>Close</button>
                 </div>
               </ModalFooter> */}
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+            {/*Edit Modal */}
+      <Modal isOpen={editModal.isOpen} onOpenChange={editModal.onOpenChange} size="lg">
+        <ModalContent className="text-my-black-950 font-inter">
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 text-[1.1rem] font-semibold tracking-wide pt-7">
+                Edit Category
+              </ModalHeader>
+              <ModalBody className="pt-0">
+                <hr></hr>
+                <form
+                  className="flex flex-col gap-6"
+                  onSubmit={(e) => handleCreateNewCategorySubmit(e)}
+                >
+                  <label className="flex flex-col text-[0.97rem]  gap-2">
+                    Name
+                    <input
+                      className="focus:outline-none placeholder-gray-400 placeholder:font-light border-2 border-my-black-100 rounded-md px-3 py-2 text-[0.89rem] "
+                      placeholder={selectedCategory?.categoryName}
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                    />
+                  </label>
+
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <h4 className="text-[0.97rem] ">Display</h4>
+                      <Tooltip
+                        content="Setting this inactive will hide all items within this category."
+                        placement="top-start"
+                        className="!z-[999999] text-my-black-950 rounded-sm"
+                      >
+                        <div>
+                          <MdInfo className="flex text-[1rem] text-my-black-700" />
+                        </div>
+                      </Tooltip>
+                    </div>
+                    <div className="flex mt-1 gap-[4rem] ">
+                      <p className="text-[0.86rem] text-my-black-900 ">
+                        Controlls whether the category is displayed in the menu.
+                      </p>
+                      <Switch
+                        isSelected={isActive}
+                        onValueChange={setIsActive}
+                        size="sm"
+                        className=""
+                        classNames={{
+                          wrapper: " group-data-[selected=true]:!bg-[#4dd164]",
+                          label: "flex items-center gap-1 text-[0.86rem] ",
+                        }}
+                      >
+                        {isActive ? "Active" : "Inactive"}
+                      </Switch>
+                    </div>
+                  </div>
+
+                  <ModalFooter className=" px-0">
+                    <div className=" w-full mt-7 flex justify-end gap-3  *:py-1 *:px-4 *:rounded-md *:text-[0.9rem] *:tracking-wide">
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        className="text-my-accent-500 font-medium border border-transparent hover:border-my-accent-300"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-[#3aa0fc] text-white border border-[#3aa0fc] hover:bg-[#3aa0fc]/95"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  </ModalFooter>
+                </form>
+              </ModalBody>
             </>
           )}
         </ModalContent>
